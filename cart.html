@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+    }
+    .cart-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .cart-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .cart-header h2 {
+      font-size: 2rem;
+    }
+    .cart-items {
+      margin-bottom: 30px;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #444;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+    .cart-item h3 {
+      margin: 0;
+    }
+    .cart-item p {
+      margin: 0;
+      color: #ddd;
+    }
+    .cart-item button {
+      padding: 5px 10px;
+      background-color: #8c7b6b;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .cart-item button:hover {
+      background-color: #6d5b4b;
+    }
+    .total {
+      text-align: right;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    .checkout-button {
+      padding: 10px 20px;
+      background-color: #8c7b6b;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .checkout-button:hover {
+      background-color: #6d5b4b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cart-container">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="back-button" onclick="window.location.href='index.html'">Back to Menu</button>
+    </div>
+
+    <div class="cart-items" id="cart-items">
+      <!-- Cart items will be dynamically injected here -->
+    </div>
+
+    <div class="total" id="total-price">
+      <!-- Total price will be displayed here -->
+    </div>
+
+    <button class="checkout-button" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+  </div>
+
+  <script>
+    // Function to display items in the cart
+    function displayCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsContainer = document.getElementById('cart-items');
+      const totalPriceElement = document.getElementById('total-price');
+      
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = "<p>Your cart is empty</p>";
+        totalPriceElement.innerHTML = "";
+        return;
+      }
+
+      let total = 0;
+      cartItemsContainer.innerHTML = '';
+      
+      cart.forEach(item => {
+        const cartItemDiv = document.createElement('div');
+        cartItemDiv.classList.add('cart-item');
+        
+        cartItemDiv.innerHTML = `
+          <div>
+            <h3>${item.name}</h3>
+            <p>RM ${item.price}</p>
+          </div>
+          <button onclick="removeFromCart('${item.name}')">Remove</button>
+        `;
+
+        cartItemsContainer.appendChild(cartItemDiv);
+        total += item.price;
+      });
+
+      totalPriceElement.innerHTML = `Total: RM ${total.toFixed(2)}`;
+    }
+
+    // Function to remove an item from the cart
+    function removeFromCart(name) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => item.name !== name);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      displayCart();
+    }
+
+    // Call the function to display the cart items when the page loads
+    displayCart();
+  </script>
+  
+</body>
+</html>
